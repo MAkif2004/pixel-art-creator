@@ -48,4 +48,81 @@ const isTouchDevice = () => {
     }
 };
 
-console.log(isTouchDevice());
+isTouchDevice();
+
+//Create Grid
+gridButton.addEventListener("click", () => {
+    //Initially clear the grid (old grids cleared)
+    container.innerHTML = "";
+    //count variable for generating unique ids
+    let count = 0;
+    //loop for creating rows
+    for (let i = 0; i < gridHeight.ariaValueMax; i++) {
+        //incrementing count by 2
+        count+=2;
+        //CreAte row div
+        let div = document.createElement("div");
+        div.classList.add("gridRow");
+        //Create Columns
+        for (let j = 0; j < gridWidth.value; j++) {
+            count += 2;
+            let col = document.createElement("div");
+            col.classList.add("gridCol");
+            /* We need unique ids for all columns (for touch screen specifically) */
+            col.setAttribute("id", `gridCol${count}`);
+            /* for example if deviceType = "mouse"
+            the statement for the event would be events[mouse].down
+            which equals to mousedown
+            if deviceType = "touch"
+            the statement for event would be events[touch].down
+            which equals to touchstart */
+
+            col.addEventListener(events[deviceType].down, () => {
+                //User starts drawing
+                draw = true;
+                //if erase = true then background = transparent
+                //else color
+                if (erase) {
+                    col.style.backgroundColor = "transparent";
+                } else {
+                col.style.backgroundColor = colorButton.value;
+                }
+            });
+
+            col.addEventListener(events[deviceType].move, (e) => {
+                /* elementFromPoint returns the element at max y position of mouse */
+                let elementId = document.elementsFromPoint(
+                    !isTouchDevice() ? e.clientX: e.touches[0]
+                    .clientX,
+                    !isTouchDevice() ? e.clientY : e.touched[0]
+                    .clientY
+                ).id;
+                //checker
+                checker(elementId);
+            });
+            //Stop drawing
+            col.addEventListener(events[deviceType].up, () => {
+                draw = false;
+            });
+            //append columns
+            div.appentChild(col);
+        }
+        //append grid to container
+        container.appendChild(div);
+    }
+});
+function checker(elementId) {
+    let gridColumns = document.querySelectorAll(".gridCol");
+    //loop through all boxed
+    gridColumns.forEach((element) => {
+        //if id matches then color
+        if (elementId == element.id) {
+            if (draw && !erase) {
+                element.style.backgroundColor = "colorButton"
+                .value;
+            } else if (draw && erase) {
+                element.style.backgroundColor = "transparent";
+            }
+        }
+    })
+}
