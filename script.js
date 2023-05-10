@@ -91,7 +91,7 @@ gridButton.addEventListener("click", () => {
 
             col.addEventListener(events[deviceType].move, (e) => {
                 /* elementFromPoint returns the element at max y position of mouse */
-                let elementId = document.elementsFromPoint(
+                let elementId = document.elementFromPoint(
                     !isTouchDevice() ? e.clientX : e.touches[0].clientX,
                     !isTouchDevice() ? e.clientY : e.touches[0].clientY
                 ).id;
