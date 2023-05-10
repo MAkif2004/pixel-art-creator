@@ -9,7 +9,7 @@ let colorButton = document.getElementById("color-input");
 let eraseBtn = document.getElementById("erase-btn");
 let paintBtn = document.getElementById("paint-btn");
 let widthValue = document.getElementById("width-value");
-let heightValues = document.getElementById("height-value");
+let heightValue = document.getElementById("height-value");
 
 
 //events object
@@ -57,7 +57,7 @@ gridButton.addEventListener("click", () => {
     //count variable for generating unique ids
     let count = 0;
     //loop for creating rows
-    for (let i = 0; i < gridHeight.ariaValueMax; i++) {
+    for (let i = 0; i < gridHeight.value; i++) {
         //incrementing count by 2
         count+=2;
         //CreAte row div
@@ -92,10 +92,8 @@ gridButton.addEventListener("click", () => {
             col.addEventListener(events[deviceType].move, (e) => {
                 /* elementFromPoint returns the element at max y position of mouse */
                 let elementId = document.elementsFromPoint(
-                    !isTouchDevice() ? e.clientX: e.touches[0]
-                    .clientX,
-                    !isTouchDevice() ? e.clientY : e.touched[0]
-                    .clientY
+                    !isTouchDevice() ? e.clientX : e.touches[0].clientX,
+                    !isTouchDevice() ? e.clientY : e.touches[0].clientY
                 ).id;
                 //checker
                 checker(elementId);
@@ -105,7 +103,7 @@ gridButton.addEventListener("click", () => {
                 draw = false;
             });
             //append columns
-            div.appentChild(col);
+            div.appendChild(col);
         }
         //append grid to container
         container.appendChild(div);
@@ -118,11 +116,41 @@ function checker(elementId) {
         //if id matches then color
         if (elementId == element.id) {
             if (draw && !erase) {
-                element.style.backgroundColor = "colorButton"
+                element.style.backgroundColor = colorButton
                 .value;
             } else if (draw && erase) {
                 element.style.backgroundColor = "transparent";
             }
         }
-    })
+    });
 }
+
+//Clear Grid
+clearGridButton.addEventListener("click", () => {
+    container.innerHTML = "";
+  });
+  //Erase Button
+  eraseBtn.addEventListener("click", () => {
+    erase = true;
+  });
+
+  //Paint button
+  paintBtn.addEventListener("click", () => {
+    erase = false;
+  });
+
+  //Display grid width and height
+  gridWidth.addEventListener("input", () => {
+    widthValue.innerHTML =
+      gridWidth.value < 9 ? `0${gridWidth.value}` : gridWidth.value;
+  });
+
+  gridHeight.addEventListener("input", () => {
+    heightValue.innerHTML =
+      gridHeight.value < 9 ? `0${gridHeight.value}` : gridHeight.value;
+  });
+
+  window.onload = () => {
+    gridWidth.value = 35;
+    gridHeight.value = 35;
+  };
